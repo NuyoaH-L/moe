@@ -1,1 +1,510 @@
-<a href="https://icp.gov.moe/?keyword=20260906" target="_blank">萌ICP备20260906号</a>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>琉璃导航 · 极简毛玻璃主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 优雅深色背景 + 动态光影渐变 (无需外部图片, 同时保留高级感) */
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 10% 20%, rgba(15, 25, 45, 0.95), rgba(8, 12, 24, 0.98)),
+                        linear-gradient(125deg, #0b1120 0%, #111827 100%);
+            background-blend-mode: overlay;
+            font-family: system-ui, 'Segoe UI', 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            padding: 2rem 1.5rem;
+            color: #f0f3fa;
+        }
+
+        /* 主容器 - 响应式宽度，优雅居中 */
+        .glass-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.8rem;
+        }
+
+        /* ========= 毛玻璃核心组件 (backdrop-filter + 半透背景) ========= */
+        .search-panel, .shortcut-card {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(20, 28, 40, 0.45);
+            border-radius: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+            transition: all 0.2s ease;
+        }
+
+        /* 搜索区域专用内边距 */
+        .search-panel {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            max-width: 860px;
+        }
+
+        /* 搜索表单布局 (响应式弹性布局) */
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem;
+            width: 100%;
+        }
+
+        /* 搜索框容器 - 自适应占据主要宽度 */
+        .input-wrapper {
+            flex: 4;
+            min-width: 180px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(10, 15, 25, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 0.9rem 1.4rem;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+
+        .search-input:focus {
+            border-color: #6c8eff;
+            background: rgba(20, 30, 55, 0.7);
+            box-shadow: 0 0 0 3px rgba(108, 142, 255, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: rgba(220, 230, 255, 0.6);
+            font-weight: 400;
+        }
+
+        /* 下拉引擎选择器 + 搜索按钮 毛玻璃风格 */
+        .engine-select {
+            background: rgba(10, 15, 25, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 0.85rem 1.2rem;
+            font-size: 0.95rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            outline: none;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .engine-select option {
+            background: #1e2a3a;
+            color: white;
+        }
+
+        .search-btn {
+            background: rgba(108, 142, 255, 0.85);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.85rem 1.6rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .search-btn:hover {
+            background: #5a7cff;
+            transform: scale(0.97);
+            box-shadow: 0 4px 12px rgba(108, 142, 255, 0.3);
+        }
+
+        /* 快捷导航标题 */
+        .shortcuts-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .shortcuts-header h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #ffffff, #b9c8ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 130px));
+            justify-content: center;
+            gap: 1.2rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        /* 单个快捷卡片 - 毛玻璃 + 微动效 */
+        .shortcut-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 1.2rem 0.5rem;
+            border-radius: 1.8rem;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: rgba(30, 40, 58, 0.45);
+            backdrop-filter: blur(14px) saturate(170%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-6px);
+            background: rgba(45, 58, 85, 0.6);
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 图标样式 (emoji 或自定义字体) */
+        .shortcut-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.6rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+
+        .shortcut-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #f0f3fc;
+            text-align: center;
+            letter-spacing: 0.3px;
+            background: rgba(0,0,0,0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 响应式布局增强 (移动端完美适配) */
+        @media (max-width: 640px) {
+            body {
+                padding: 1.2rem 1rem;
+            }
+            .glass-container {
+                gap: 2rem;
+            }
+            .search-panel {
+                padding: 0.9rem 1.2rem;
+                border-radius: 2rem;
+            }
+            .search-form {
+                gap: 0.6rem;
+            }
+            .search-input {
+                padding: 0.75rem 1.2rem;
+                font-size: 0.95rem;
+            }
+            .engine-select {
+                padding: 0.7rem 0.9rem;
+                font-size: 0.85rem;
+                flex: 1;
+            }
+            .search-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+                flex: 0.5;
+            }
+            .shortcuts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(95px, 105px));
+                gap: 0.9rem;
+            }
+            .shortcut-card {
+                padding: 0.9rem 0.3rem;
+            }
+            .shortcut-icon {
+                font-size: 2.2rem;
+            }
+            .shortcut-name {
+                font-size: 0.75rem;
+            }
+            .shortcuts-header h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* 桌面端大屏幕更舒展 */
+        @media (min-width: 1024px) {
+            .shortcuts-grid {
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fill, minmax(130px, 140px));
+            }
+            .shortcut-card {
+                padding: 1.4rem 0.3rem;
+            }
+            .shortcut-icon {
+                font-size: 3rem;
+            }
+        }
+
+        /* 极简脚注 (仅装饰) */
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* 去除默认a标签下划线 */
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-container">
+    <!-- 搜索区域 - 毛玻璃核心 -->
+    <div class="search-panel">
+        <form class="search-form" id="searchForm" action="javascript:void(0);">
+            <div class="input-wrapper">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索网页或输入关键词..." autocomplete="off" aria-label="搜索内容">
+            </div>
+            <select id="engineSelect" class="engine-select" aria-label="选择搜索引擎">
+                <option value="google">🔍 Google</option>
+                <option value="bing">🌐 必应 (Bing)</option>
+                <option value="baidu">🐻 百度 (Baidu)</option>
+            </select>
+            <button type="submit" class="search-btn" id="searchBtn">搜索</button>
+        </form>
+    </div>
+
+    <!-- 快捷导航区域 - 源码可自定义数组 -->
+    <div class="shortcuts-header">
+        <h2>✦ 灵 感 捷 径 ✦</h2>
+    </div>
+    <div class="shortcuts-grid" id="shortcutsGrid">
+        <!-- 动态js渲染快捷导航 -->
+    </div>
+    <div class="footer-note">
+        毛玻璃导航 | 可随心修改源码 shortcuts 数组
+    </div>
+  <footer>
+    <a href="https://icp.gov.moe/?keyword=20260906" target="_blank">萌ICP备20260906号</a>
+  </footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 🔧 通过源码自定义的快捷导航列表 (请直接修改此数组即可增/删/改快捷方式)
+    // 格式: { name: "显示名称", url: "完整网址", icon: "emoji 或 文字图标" }
+    // 提示: 支持任意常用网站，图标建议使用1~2个emoji，更生动
+    // --------------------------------------------------------------
+    const SHORTCUTS_LIST = [
+        { name: "Google", url: "https://www.google.com", icon: "🔎" },
+        { name: "GitHub", url: "https://github.com", icon: "🐙" },
+        { name: "Bilibili", url: "https://www.bilibili.com", icon: "📺" },
+        { name: "YouTube", url: "https://youtube.com", icon: "📹" },
+        { name: "知乎", url: "https://www.zhihu.com", icon: "🤔" },
+        { name: "X (Twitter)", url: "https://twitter.com", icon: "🐦" },
+        { name: "Reddit", url: "https://www.reddit.com", icon: "🤖" },
+        { name: "维基百科", url: "https://www.wikipedia.org", icon: "🌐" },
+        { name: "网易云音乐", url: "https://music.163.com", icon: "🎵" },
+        { name: "Gmail", url: "https://mail.google.com", icon: "📧" }
+        // 🌟 你可以自由增删以上条目，格式保持一致即可，页面自动刷新渲染
+        // 例如添加: { name: "DuckDuckGo", url: "https://duckduckgo.com", icon: "🦆" },
+    ];
+
+    // ---------- 搜索引擎映射表 (支持精确跳转 + 中文参数编码) ----------
+    const SEARCH_ENGINES = {
+        google: {
+            name: "Google",
+            url: "https://www.google.com/search?q="
+        },
+        bing: {
+            name: "Bing",
+            url: "https://www.bing.com/search?q="
+        },
+        baidu: {
+            name: "Baidu",
+            url: "https://www.baidu.com/s?wd="
+        }
+    };
+
+    // ---------- 本地存储KEY (记住用户上次选择的搜索引擎) ----------
+    const STORAGE_ENGINE_KEY = "user_selected_engine";
+
+    // DOM 元素
+    const searchInput = document.getElementById('searchInput');
+    const engineSelect = document.getElementById('engineSelect');
+    const searchForm = document.getElementById('searchForm');
+    const shortcutsGrid = document.getElementById('shortcutsGrid');
+
+    // ---------- 渲染快捷导航 (纯源码自定义，支持新窗口打开) ----------
+    function renderShortcuts() {
+        if (!shortcutsGrid) return;
+        shortcutsGrid.innerHTML = ''; // 清空容器
+        
+        if (!SHORTCUTS_LIST || SHORTCUTS_LIST.length === 0) {
+            // 如果没有快捷方式，显示一条提示 (几乎不会出现)
+            const emptyMsg = document.createElement('div');
+            emptyMsg.className = 'shortcut-card';
+            emptyMsg.style.cursor = 'default';
+            emptyMsg.innerHTML = `<div class="shortcut-icon">✨</div><div class="shortcut-name">暂无快捷方式<br>请修改源码数组</div>`;
+            shortcutsGrid.appendChild(emptyMsg);
+            return;
+        }
+        
+        // 遍历数组生成卡片
+        SHORTCUTS_LIST.forEach(shortcut => {
+            // 数据健壮性校验
+            if (!shortcut.name || !shortcut.url) return;
+            const card = document.createElement('a');
+            card.className = 'shortcut-card';
+            card.href = shortcut.url;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+            // 自定义图标或默认emoji
+            const icon = shortcut.icon && shortcut.icon.trim() !== "" ? shortcut.icon : "🔗";
+            card.innerHTML = `
+                <div class="shortcut-icon">${icon}</div>
+                <div class="shortcut-name">${escapeHtml(shortcut.name)}</div>
+            `;
+            shortcutsGrid.appendChild(card);
+        });
+    }
+    
+    // 简单防XSS辅助 (对于name做转义)
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+    
+    // ---------- 执行搜索逻辑 (根据当前选择的搜索引擎) ----------
+    function performSearch() {
+        let keyword = searchInput.value.trim();
+        if (keyword === "") {
+            // 轻微提示但不暴力弹窗，可让输入框抖动一下（优雅反馈）
+            searchInput.style.transform = 'scale(0.99)';
+            setTimeout(() => { searchInput.style.transform = ''; }, 150);
+            searchInput.placeholder = "请输入搜索词...";
+            setTimeout(() => { searchInput.placeholder = "搜索网页或输入关键词..."; }, 1000);
+            return;
+        }
+        
+        // 获取当前选中的引擎值
+        const selectedEngine = engineSelect.value;
+        const engineConfig = SEARCH_ENGINES[selectedEngine];
+        if (!engineConfig) return;
+        
+        // 构建完整搜索URL并进行编码
+        let fullUrl = engineConfig.url + encodeURIComponent(keyword);
+        // 针对百度特殊处理（百度也支持标准的wd参数，encodeURIComponent完美兼容）
+        if (selectedEngine === 'baidu') {
+            fullUrl = engineConfig.url + encodeURIComponent(keyword);
+        }
+        // 打开新标签页进行搜索
+        window.open(fullUrl, '_blank');
+        
+        // 可选：保存当前选中的引擎到本地存储（方便下次使用）
+        localStorage.setItem(STORAGE_ENGINE_KEY, selectedEngine);
+    }
+    
+    // ---------- 保存并恢复用户之前使用的搜索引擎 ----------
+    function restoreEngineSelection() {
+        const savedEngine = localStorage.getItem(STORAGE_ENGINE_KEY);
+        if (savedEngine && SEARCH_ENGINES[savedEngine]) {
+            engineSelect.value = savedEngine;
+        } else {
+            // 默认设置为 Google (更普适)
+            engineSelect.value = "google";
+        }
+    }
+    
+    // 当手动切换搜索引擎时，自动保存用户偏好
+    function bindEngineChangeEvent() {
+        engineSelect.addEventListener('change', function() {
+            localStorage.setItem(STORAGE_ENGINE_KEY, engineSelect.value);
+        });
+    }
+    
+    // ---------- 监听回车 + 按钮提交 ----------
+    function bindSearchEvents() {
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                performSearch();
+            });
+        }
+        // 备用：按钮点击 (保证万一)
+        const searchBtn = document.getElementById('searchBtn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                performSearch();
+            });
+        }
+        // 同时监听输入框回车键，防止任何遗漏
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        }
+    }
+    
+    // 增加一个额外微效: 输入框自动获得焦点（提升体验，但移动端不强制唤起键盘避免遮挡）
+    function focusInputOnDesktop() {
+        if (window.innerWidth > 768) {
+            searchInput.focus();
+        }
+    }
+    
+    // ---------- 初始化整个导航页 ----------
+    function init() {
+        renderShortcuts();               // 根据源码自定义数组渲染快捷导航
+        restoreEngineSelection();       // 恢复搜索引擎选择记忆
+        bindEngineChangeEvent();        // 保存引擎偏好
+        bindSearchEvents();             // 绑定搜索事件
+        focusInputOnDesktop();          // 桌面端自动聚焦输入框
+    }
+    
+    // 启动所有功能
+    init();
+    
+    // 可选: 如果用户想要自定义更多效果，也可以监听resize重新调整聚焦行为（无伤大雅）
+    window.addEventListener('resize', function() {
+        // 不做额外操作，但保持体验整洁
+    });
+    
+    // 说明：对于移动端，毛玻璃效果完全兼容；背景采用径向渐变无网络请求，更稳定；
+    // 快捷导航完全基于 SHORTCUTS_LIST，你可以任意修改，增加或删除，刷新页面即生效。
+    // 搜索引擎已内置必应、百度、谷歌，并且切换会保存到localStorage。
+</script>
+</body>
+</html>
